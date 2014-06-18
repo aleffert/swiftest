@@ -12,28 +12,31 @@ import UIKit
 import QuartzCore
 
 
-// 
-
-
 class ShapeView : UIView {
+    
+    @lazy let shapeLayer : CAShapeLayer = CAShapeLayer()
+    
     init(frame: CGRect)  {
         shapeLayer = CAShapeLayer()
         super.init(frame: frame)
         setup()
     }
     
+    // In theory there's only one true initializer that the other ones flow through
+    // But that's not true when NSCoding gets involved
     init(coder aDecoder: NSCoder!)  {
-        shapeLayer = CAShapeLayer()
+        // Which means we have to do this in both places
+        // And can't put it in a method because you can't call self methods before super.init
+
         super.init(coder: aDecoder)
         setup()
     }
-    
-    let shapeLayer : CAShapeLayer
 
     func setup() {
         layer.addSublayer(shapeLayer)
     }
     
+    // Note the explicit override
     override func layoutSubviews()  {
         super.layoutSubviews()
         shapeLayer.frame = bounds

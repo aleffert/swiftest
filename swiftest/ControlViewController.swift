@@ -10,6 +10,9 @@ import Foundation
 import UIKit
 import QuartzCore
 
+// This looks like a C enum
+// But you can do a bunch of great stuff with 'enum'
+// Or at least you will once the compiler bugs are fixed
 enum Shape {
     case Rectangle
     case Oval
@@ -24,11 +27,13 @@ class ControlViewController : UIViewController {
     @IBOutlet var shapeView : ShapeView
     
     // Declare an ivar
+    // Nice short function type
+    // On objc would look like ShapePathMap(^)(ControlViewController controller)
     let pathActions : ControlViewController -> ShapePathMap
     
     // initWithNibName:bundle: translates into init(nibName, bundle)
     init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
-        // Have to set up instance properties before calling super
+        // Again have to set up instance properties before calling super
         // Since pathActions is immutable (marked with a let)
         
         pathActions =  {(owner : ControlViewController) -> ShapePathMap in
@@ -59,17 +64,18 @@ class ControlViewController : UIViewController {
     override func viewDidLoad()  {
         shapeView.shapeLayer.fillColor = UIColor.redColor().CGColor
         self.updateShapeTo(Shape.Oval)
+        
     }
     
     func updateShapeTo(shape : Shape) {
-        let path = pathActions(self)[shape]?()
+        let path = pathActions(self)[shape]!()
         let animation = CABasicAnimation(keyPath: "path")
 
         // This could be objc
         animation.fromValue = shapeView.shapeLayer.path
         animation.toValue = path
         animation.duration = 1
-        shapeView.shapeLayer.path = path?.CGPath
+        shapeView.shapeLayer.path = path.CGPath
         shapeView.shapeLayer.addAnimation(animation, forKey: "pathTransition")
     }
     
